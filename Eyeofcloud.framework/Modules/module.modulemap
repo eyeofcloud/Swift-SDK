@@ -1,0 +1,11 @@
+framework module Eyeofcloud {
+  umbrella header "EyeofcloudSwiftSDK-umbrella.h"
+
+  export *
+  module * { export * }
+}
+
+module Eyeofcloud.Swift {
+  header "Eyeofcloud-Swift.h"
+  requires objc
+}

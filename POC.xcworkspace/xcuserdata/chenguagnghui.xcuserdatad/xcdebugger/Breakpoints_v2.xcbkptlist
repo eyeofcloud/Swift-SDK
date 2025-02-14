@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "3CBCDFDB-CFDE-4646-8C7E-074566321A8B"
+   type = "0"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A3C6474B-4505-4077-B769-8A38FF14CAD0"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "EyeofcloudDemo/Buy.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "105"
+            endingLineNumber = "105"
+            landmarkName = "InitBuy()"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "A3C6474B-4505-4077-B769-8A38FF14CAD0 - ed7966b59fbbeb7f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "EyeofcloudDemo.Buy.InitBuy() -&gt; ()"
+                  moduleName = "EyeofcloudDemo"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chenguagnghui/iOS/EyeofcloudDemo/EyeofcloudDemo/Buy.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "124"
+                  endingLineNumber = "124"
+                  offsetFromSymbolStart = "357">
+               </Location>
+               <Location
+                  uuid = "A3C6474B-4505-4077-B769-8A38FF14CAD0 - ed7966b59fbbeb7f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "EyeofcloudDemo.Buy.InitBuy() -&gt; ()"
+                  moduleName = "EyeofcloudDemo"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/chenguagnghui/iOS/EyeofcloudDemo/EyeofcloudDemo/Buy.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "124"
+                  endingLineNumber = "124"
+                  offsetFromSymbolStart = "246">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A256D2B1-35CD-4979-A907-DC26903E9EFA"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Pods/EyeofcloudSwiftSDK/Sources/Eyeofcloud/EyeofcloudClient.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "118"
+            endingLineNumber = "118"
+            landmarkName = "start(resourceTimeout:completion:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
