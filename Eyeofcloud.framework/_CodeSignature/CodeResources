@@ -6,35 +6,59 @@
 	<dict>
 		<key>Headers/Eyeofcloud-Swift.h</key>
 		<data>
-		MCWXEkmLQ/HhqXUS1BWYCaAeu/4=
+		GCZ0Oy2SSChphQUcAxIaIcWmtlY=
 		</data>
-		<key>Headers/EyeofcloudSwiftSDK-umbrella.h</key>
+		<key>Headers/Eyeofcloud.h</key>
 		<data>
-		BrJZNGF1Mh7HHiv5X+FMoV0ypUs=
+		xSXT87+EsxrTt0u9SRI5vk2uDgg=
 		</data>
 		<key>Info.plist</key>
 		<data>
-		CX+0t7y68+/yfeODKMEhXbN5aOI=
+		olSLQ2Igcj7jNDV77u2HDZn4xNQ=
 		</data>
-		<key>Modules/Eyeofcloud.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
+		<key>Modules/Eyeofcloud.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<data>
-		EWr/daI2Q8qxdILoUo9XEqGf7mo=
+		xnowuFp4D6HuuHPAXqqn5ZIPA/k=
+		</data>
+		<key>Modules/Eyeofcloud.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
+		<data>
+		RMZmN3x7nVSd8gwRb84pbYmcHCM=
+		</data>
+		<key>Modules/Eyeofcloud.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
+		<data>
+		DHRvB9t9weIgvJOvDOy2rtmFyKk=
+		</data>
+		<key>Modules/Eyeofcloud.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
+		<data>
+		RMZmN3x7nVSd8gwRb84pbYmcHCM=
+		</data>
+		<key>Modules/Eyeofcloud.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
+		<data>
+		CimOLc87S2vNR3RjFdLUftGc7Z8=
 		</data>
 		<key>Modules/Eyeofcloud.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<data>
-		FSPnLbho3G+LL9smI3XgVOqBIQ4=
+		xnowuFp4D6HuuHPAXqqn5ZIPA/k=
+		</data>
+		<key>Modules/Eyeofcloud.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
+		<data>
+		PeKAIVM9lI6VvUPLdfFret4JvdY=
 		</data>
 		<key>Modules/Eyeofcloud.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<data>
-		rXjsXWiyysSxl21NGOvezU1O22w=
+		fh4ZF50DaZo5AJvql8G0x8BDRWs=
+		</data>
+		<key>Modules/Eyeofcloud.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
+		<data>
+		PeKAIVM9lI6VvUPLdfFret4JvdY=
 		</data>
 		<key>Modules/Eyeofcloud.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<data>
-		2E0bGhHuqiPuY76kRqHVm/plbW8=
+		vw5C5mU2tIYxh2WHsF0Oi/WbdoQ=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
-		f1oxN7AyfBc0sP7DgEevUU6UaZQ=
+		cqafrftLgAQW/FxoQdG2CVO/Fr8=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -43,77 +67,143 @@
 		<dict>
 			<key>hash</key>
 			<data>
-			MCWXEkmLQ/HhqXUS1BWYCaAeu/4=
+			GCZ0Oy2SSChphQUcAxIaIcWmtlY=
 			</data>
 			<key>hash2</key>
 			<data>
-			F9EXc/h1ZqAC03Tyxf8XEgVdkvFiMYM7lA9h0cSe5Z4=
+			j3mXqmQSdTZHZpbjS5v8rXA4VkBcPYHjtA9KBsEJfvc=
 			</data>
 		</dict>
-		<key>Headers/EyeofcloudSwiftSDK-umbrella.h</key>
+		<key>Headers/Eyeofcloud.h</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			BrJZNGF1Mh7HHiv5X+FMoV0ypUs=
+			xSXT87+EsxrTt0u9SRI5vk2uDgg=
 			</data>
 			<key>hash2</key>
 			<data>
-			6usPw79EJ0QlR3Q0AqLL8H+H5LnlOVHQwvhjh5UlH2k=
+			H3Ny+XnLvKIh4qIpliCjtcnYyjctmKthWK9S/o8X06A=
 			</data>
 		</dict>
-		<key>Modules/Eyeofcloud.swiftmodule/Project/x86_64-apple-ios-simulator.swiftsourceinfo</key>
+		<key>Modules/Eyeofcloud.swiftmodule/arm64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			EWr/daI2Q8qxdILoUo9XEqGf7mo=
+			xnowuFp4D6HuuHPAXqqn5ZIPA/k=
 			</data>
 			<key>hash2</key>
 			<data>
-			vTSLEvr0XuscUyvVd8eXAqEGW/xo4zJ6hrMCx9ic3kQ=
+			6iYJfzS+vgUMC0mDHOaEZeJW3qIKHCBmQVjtfqE3PEc=
+			</data>
+		</dict>
+		<key>Modules/Eyeofcloud.swiftmodule/arm64-apple-ios-simulator.private.swiftinterface</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			RMZmN3x7nVSd8gwRb84pbYmcHCM=
+			</data>
+			<key>hash2</key>
+			<data>
+			CZugrsmhoD3p3hiBVNrOmgiPkaWljSzPb982YD6SGS8=
+			</data>
+		</dict>
+		<key>Modules/Eyeofcloud.swiftmodule/arm64-apple-ios-simulator.swiftdoc</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			DHRvB9t9weIgvJOvDOy2rtmFyKk=
+			</data>
+			<key>hash2</key>
+			<data>
+			aCfMf0CRFbde2wlXkqWU1r0xByH5uLfbCRzYvh9Py7U=
+			</data>
+		</dict>
+		<key>Modules/Eyeofcloud.swiftmodule/arm64-apple-ios-simulator.swiftinterface</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			RMZmN3x7nVSd8gwRb84pbYmcHCM=
+			</data>
+			<key>hash2</key>
+			<data>
+			CZugrsmhoD3p3hiBVNrOmgiPkaWljSzPb982YD6SGS8=
+			</data>
+		</dict>
+		<key>Modules/Eyeofcloud.swiftmodule/arm64-apple-ios-simulator.swiftmodule</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			CimOLc87S2vNR3RjFdLUftGc7Z8=
+			</data>
+			<key>hash2</key>
+			<data>
+			XLKMkG03Nocy39wMTfeFzS/zpjsDvamFxmwOjRmBljc=
 			</data>
 		</dict>
 		<key>Modules/Eyeofcloud.swiftmodule/x86_64-apple-ios-simulator.abi.json</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			FSPnLbho3G+LL9smI3XgVOqBIQ4=
+			xnowuFp4D6HuuHPAXqqn5ZIPA/k=
 			</data>
 			<key>hash2</key>
 			<data>
-			KnRdWE4y6t4QM5zi5JDptPdHFgJy1Tku+7GLkZS2aNM=
+			6iYJfzS+vgUMC0mDHOaEZeJW3qIKHCBmQVjtfqE3PEc=
+			</data>
+		</dict>
+		<key>Modules/Eyeofcloud.swiftmodule/x86_64-apple-ios-simulator.private.swiftinterface</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			PeKAIVM9lI6VvUPLdfFret4JvdY=
+			</data>
+			<key>hash2</key>
+			<data>
+			LNnlwE0kJg4x0aORofIffkPcxDKxvwHwDkwiwmm/rjs=
 			</data>
 		</dict>
 		<key>Modules/Eyeofcloud.swiftmodule/x86_64-apple-ios-simulator.swiftdoc</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			rXjsXWiyysSxl21NGOvezU1O22w=
+			fh4ZF50DaZo5AJvql8G0x8BDRWs=
 			</data>
 			<key>hash2</key>
 			<data>
-			tIpk0oYfvwFaCd41YDVU44cndchT/UBERNbMtMWTBPU=
+			BU1BKHAdJ7wummP1UxN/KgCp8XMw8rxXq2YGnTV62V4=
+			</data>
+		</dict>
+		<key>Modules/Eyeofcloud.swiftmodule/x86_64-apple-ios-simulator.swiftinterface</key>
+		<dict>
+			<key>hash</key>
+			<data>
+			PeKAIVM9lI6VvUPLdfFret4JvdY=
+			</data>
+			<key>hash2</key>
+			<data>
+			LNnlwE0kJg4x0aORofIffkPcxDKxvwHwDkwiwmm/rjs=
 			</data>
 		</dict>
 		<key>Modules/Eyeofcloud.swiftmodule/x86_64-apple-ios-simulator.swiftmodule</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			2E0bGhHuqiPuY76kRqHVm/plbW8=
+			vw5C5mU2tIYxh2WHsF0Oi/WbdoQ=
 			</data>
 			<key>hash2</key>
 			<data>
-			jSX4V1ize9WRpc7X4deuAeONJSb+W2AtaepVT05euDg=
+			9EaPvVjuBFAEtn6HeOnysT99zZbGrawQ/sif41WWnV8=
 			</data>
 		</dict>
 		<key>Modules/module.modulemap</key>
 		<dict>
 			<key>hash</key>
 			<data>
-			f1oxN7AyfBc0sP7DgEevUU6UaZQ=
+			cqafrftLgAQW/FxoQdG2CVO/Fr8=
 			</data>
 			<key>hash2</key>
 			<data>
-			Z5I5rb4/0fkH8EjmeoUfZA2EMwgAiDkiDK0e96cKOv8=
+			FL9ftZ5DfGzaq7jNIv/uho/lcGcNAIhLrOXguZeyXwc=
 			</data>
 		</dict>
 	</dict>

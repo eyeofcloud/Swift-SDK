@@ -1,7 +1,7 @@
 framework module Eyeofcloud {
-  umbrella header "EyeofcloudSwiftSDK-umbrella.h"
-
+  umbrella header "Eyeofcloud.h"
   export *
+
   module * { export * }
 }
 

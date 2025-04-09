@@ -1,0 +1,681 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.10 (swiftlang-5.10.0.13 clang-1500.3.9.4)
+// swift-module-flags: -target arm64-apple-ios10.0-simulator -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -enable-bare-slash-regex -module-name Eyeofcloud
+@_exported import Eyeofcloud
+import Foundation
+import Network
+import Swift
+import UIKit
+import _Concurrency
+import _StringProcessing
+import _SwiftConcurrencyShims
+import os.log
+import os
+extension Eyeofcloud.EyeofcloudClient {
+  convenience public init(sdkKey: Swift.String, logger: (any Eyeofcloud.OPTLogger)? = nil, eventDispatcher: (any Eyeofcloud.OPTEventDispatcher)? = nil, datafileHandler: (any Eyeofcloud.OPTDatafileHandler)? = nil, userProfileService: (any Eyeofcloud.OPTUserProfileService)? = nil, periodicDownloadInterval: Swift.Int?, defaultLogLevel: Eyeofcloud.EyeofcloudLogLevel? = nil, defaultDecideOptions: [Eyeofcloud.EyeofcloudDecideOption]? = nil)
+}
+public struct EyeofcloudDecision {
+  public let variationKey: Swift.String?
+  public let enabled: Swift.Bool
+  public let variables: Eyeofcloud.EyeofcloudJSON
+  public let ruleKey: Swift.String?
+  public let flagKey: Swift.String
+  public let userContext: Eyeofcloud.EyeofcloudUserContext
+  public let reasons: [Swift.String]
+}
+extension Eyeofcloud.EyeofcloudDecision : Swift.Equatable {
+  public static func == (lhs: Eyeofcloud.EyeofcloudDecision, rhs: Eyeofcloud.EyeofcloudDecision) -> Swift.Bool
+}
+extension Eyeofcloud.EyeofcloudDecision : Swift.CustomStringConvertible {
+  public var description: Swift.String {
+    get
+  }
+}
+open class DefaultDatafileHandler : Eyeofcloud.OPTDatafileHandler {
+  public var endPointStringFormat: Swift.String
+  required public init()
+  open func downloadDatafile(sdkKey: Swift.String, returnCacheIfNoChange: Swift.Bool, resourceTimeoutInterval: Swift.Double?, completionHandler: @escaping Eyeofcloud.DatafileDownloadCompletionHandler)
+  public func downloadDatafile(sdkKey: Swift.String) -> Foundation.Data?
+  open func getSession(resourceTimeoutInterval: Swift.Double?) -> Foundation.URLSession
+  open func getRequest(sdkKey: Swift.String) -> Foundation.URLRequest?
+  open func getResponseData(sdkKey: Swift.String, response: Foundation.HTTPURLResponse, url: Foundation.URL?) -> Foundation.Data?
+  public func setPeriodicInterval(sdkKey: Swift.String, interval: Swift.Int)
+  public func hasPeriodicInterval(sdkKey: Swift.String) -> Swift.Bool
+  public func startUpdates(sdkKey: Swift.String, datafileChangeNotification: ((Foundation.Data) -> Swift.Void)?)
+  public func stopUpdates(sdkKey: Swift.String)
+  public func stopAllUpdates()
+  open func createDataStore(sdkKey: Swift.String) -> any Eyeofcloud.OPTDataStore
+  public func saveDatafile(sdkKey: Swift.String, dataFile: Foundation.Data)
+  public func loadSavedDatafile(sdkKey: Swift.String) -> Foundation.Data?
+  public func isDatafileSaved(sdkKey: Swift.String) -> Swift.Bool
+  public func removeSavedDatafile(sdkKey: Swift.String)
+  @objc deinit
+}
+@objc public protocol OPTLogger {
+  @objc static var logLevel: Eyeofcloud.EyeofcloudLogLevel { get set }
+  @objc init()
+  @objc func log(level: Eyeofcloud.EyeofcloudLogLevel, message: Swift.String)
+}
+@_inheritsConvenienceInitializers @objc public class OPTLoggerFactory : ObjectiveC.NSObject {
+  @objc override dynamic public init()
+  @objc deinit
+}
+public typealias DispatchCompletionHandler = (Eyeofcloud.EyeofcloudResult<Foundation.Data>) -> Swift.Void
+public protocol OPTEventDispatcher {
+  func dispatchEvent(event: Eyeofcloud.EventForDispatch, completionHandler: Eyeofcloud.DispatchCompletionHandler?)
+  func flushEvents()
+  func close()
+}
+extension Eyeofcloud.OPTEventDispatcher {
+  public func close()
+}
+public class DefaultNotificationCenter : Eyeofcloud.OPTNotificationCenter {
+  public var notificationId: Swift.Int {
+    get
+    set
+  }
+  required public init()
+  @objc deinit
+  public func addGenericNotificationListener(notificationType: Swift.Int, listener: @escaping Eyeofcloud.GenericListener) -> Swift.Int?
+  public func addActivateNotificationListener(activateListener: @escaping (Eyeofcloud.EyeofcloudExperimentData, Swift.String, Eyeofcloud.EyeofcloudAttributes?, Eyeofcloud.EyeofcloudVariationData, [Swift.String : Any]) -> Swift.Void) -> Swift.Int?
+  public func addTrackNotificationListener(trackListener: @escaping (Swift.String, Swift.String, Eyeofcloud.EyeofcloudAttributes?, [Swift.String : Any]?, [Swift.String : Any]) -> Swift.Void) -> Swift.Int?
+  public func addDecisionNotificationListener(decisionListener: @escaping (Swift.String, Swift.String, Eyeofcloud.EyeofcloudAttributes?, [Swift.String : Any]) -> Swift.Void) -> Swift.Int?
+  public func addDatafileChangeNotificationListener(datafileListener: @escaping Eyeofcloud.DatafileChangeListener) -> Swift.Int?
+  public func addLogEventNotificationListener(logEventListener: @escaping Eyeofcloud.LogEventListener) -> Swift.Int?
+  public func removeNotificationListener(notificationId: Swift.Int)
+  public func clearNotificationListeners(type: Eyeofcloud.NotificationType)
+  public func clearAllNotificationListeners()
+  public func sendNotifications(type: Swift.Int, args: [Any?])
+}
+public enum DataStoreType {
+  case file, memory, userDefaults
+  public static func == (a: Eyeofcloud.DataStoreType, b: Eyeofcloud.DataStoreType) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+open class DefaultEventDispatcher : Eyeofcloud.OPTEventDispatcher {
+  public struct DefaultValues {
+    public static let batchSize: Swift.Int
+    public static let timeInterval: Swift.Double
+    public static let maxQueueSize: Swift.Int
+  }
+  public init(batchSize: Swift.Int = DefaultValues.batchSize, backingStore: Eyeofcloud.DataStoreType = .file, dataStoreName: Swift.String = "OPTEventQueue", timerInterval: Foundation.TimeInterval = DefaultValues.timeInterval, maxQueueSize: Swift.Int = DefaultValues.maxQueueSize)
+  @objc deinit
+  open func dispatchEvent(event: Eyeofcloud.EventForDispatch, completionHandler: Eyeofcloud.DispatchCompletionHandler?)
+  open func flushEvents()
+  open func sendEvent(event: Eyeofcloud.EventForDispatch, completionHandler: @escaping Eyeofcloud.DispatchCompletionHandler)
+}
+extension Eyeofcloud.DefaultEventDispatcher {
+  open func close()
+}
+extension Eyeofcloud.EyeofcloudClient {
+  public func createUserContext(userId: Swift.String, attributes: [Swift.String : Any]? = nil) -> Eyeofcloud.EyeofcloudUserContext
+}
+open class DataStoreFile<T> : Eyeofcloud.OPTDataStore where T : Swift.Decodable, T : Swift.Encodable {
+  final public let url: Foundation.URL
+  public init(storeName: Swift.String, async: Swift.Bool = true)
+  public func getItem(forKey: Swift.String) -> Any?
+  public func saveItem(forKey: Swift.String, value: Any)
+  public func removeItem(forKey: Swift.String)
+  open func readData() throws -> Foundation.Data
+  open func writeData(_ data: Foundation.Data) throws
+  @objc deinit
+}
+@objc(EyeofcloudUserContext) @objcMembers public class ObjcEyeofcloudUserContext : ObjectiveC.NSObject {
+  @objc public var userId: Swift.String {
+    @objc get
+  }
+  @objc public var attributes: [Swift.String : Any] {
+    @objc get
+  }
+  @objc public var eyeofcloud: Eyeofcloud.EyeofcloudClient? {
+    @objc get
+  }
+  @objc public init(eyeofcloud: Eyeofcloud.EyeofcloudClient, userId: Swift.String, attributes: [Swift.String : Any]? = nil)
+  public init(user: Eyeofcloud.EyeofcloudUserContext)
+  @objc public func setAttribute(key: Swift.String, value: Any)
+  @objc public func decide(key: Swift.String, options: [Swift.Int]? = nil) -> Eyeofcloud.ObjcEyeofcloudDecision
+  @objc public func decide(keys: [Swift.String], options: [Swift.Int]? = nil) -> [Swift.String : Eyeofcloud.ObjcEyeofcloudDecision]
+  @objc public func decideAll(options: [Swift.Int]? = nil) -> [Swift.String : Eyeofcloud.ObjcEyeofcloudDecision]
+  @objc public func trackEvent(eventKey: Swift.String, eventTags: [Swift.String : Any]? = nil) throws
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers @objc(EyeofcloudDecision) @objcMembers public class ObjcEyeofcloudDecision : ObjectiveC.NSObject {
+  @objc final public let variationKey: Swift.String?
+  @objc final public let enabled: Swift.Bool
+  @objc final public let variables: Eyeofcloud.EyeofcloudJSON
+  @objc final public let ruleKey: Swift.String?
+  @objc final public let flagKey: Swift.String
+  @objc final public let userContext: Eyeofcloud.ObjcEyeofcloudUserContext
+  @objc final public let reasons: [Swift.String]
+  @objc deinit
+}
+extension Eyeofcloud.EyeofcloudClient {
+  @available(swift, obsoleted: 1.0)
+  @objc(createUserContextWithUserId:attributes:) dynamic public func objcCreateUserContext(userId: Swift.String, attributes: [Swift.String : Any]? = nil) -> Eyeofcloud.ObjcEyeofcloudUserContext
+  @available(swift, obsoleted: 1.0)
+  @objc convenience dynamic public init(sdkKey: Swift.String, logger: (any Eyeofcloud.OPTLogger)?, eventDispatcher: (any Eyeofcloud._ObjcOPTEventDispatcher)?, userProfileService: (any Eyeofcloud.OPTUserProfileService)?, periodicDownloadInterval: Foundation.NSNumber?, defaultLogLevel: Eyeofcloud.EyeofcloudLogLevel, defaultDecideOptions: [Swift.Int]?)
+}
+public enum EyeofcloudResult<Value> {
+  case success(Value)
+  case failure(Eyeofcloud.EyeofcloudError)
+}
+open class DefaultLogger : Eyeofcloud.OPTLogger {
+  @objc public static var logLevel: Eyeofcloud.EyeofcloudLogLevel {
+    @objc get
+    @objc set(newLevel)
+  }
+  @objc required public init()
+  @objc open func log(level: Eyeofcloud.EyeofcloudLogLevel, message: Swift.String)
+  @objc deinit
+}
+@objc(EyeofcloudConfig) public protocol ObjcEyeofcloudConfig {
+  @objc var environmentKey: Swift.String { get }
+  @objc var revision: Swift.String { get }
+  @objc var sdkKey: Swift.String { get }
+  @objc var experimentsMap: [Swift.String : any Eyeofcloud.ObjcEyeofcloudExperiment] { get }
+  @objc var featuresMap: [Swift.String : any Eyeofcloud.ObjcEyeofcloudFeature] { get }
+  @objc var attributes: [any Eyeofcloud.ObjcEyeofcloudAttribute] { get }
+  @objc var audiences: [any Eyeofcloud.ObjcEyeofcloudAudience] { get }
+  @objc var events: [any Eyeofcloud.ObjcEyeofcloudEvent] { get }
+}
+@objc(EyeofcloudExperiment) public protocol ObjcEyeofcloudExperiment {
+  @objc var id: Swift.String { get }
+  @objc var key: Swift.String { get }
+  @objc var audiences: Swift.String { get }
+  @objc var variationsMap: [Swift.String : any Eyeofcloud.ObjcEyeofcloudVariation] { get }
+}
+@objc(EyeofcloudFeature) public protocol ObjcEyeofcloudFeature {
+  @objc var id: Swift.String { get }
+  @objc var key: Swift.String { get }
+  @objc var experimentRules: [any Eyeofcloud.ObjcEyeofcloudExperiment] { get }
+  @objc var deliveryRules: [any Eyeofcloud.ObjcEyeofcloudExperiment] { get }
+  @objc var variablesMap: [Swift.String : any Eyeofcloud.ObjcEyeofcloudVariable] { get }
+  @objc @available(*, deprecated, message: "Use experimentRules and deliveryRules")
+  var experimentsMap: [Swift.String : any Eyeofcloud.ObjcEyeofcloudExperiment] { get }
+}
+@objc(EyeofcloudVariation) public protocol ObjcEyeofcloudVariation {
+  @objc var id: Swift.String { get }
+  @objc var key: Swift.String { get }
+  @objc var featureEnabled: Swift.Bool { get }
+  @objc var variablesMap: [Swift.String : any Eyeofcloud.ObjcEyeofcloudVariable] { get }
+}
+@objc(EyeofcloudVariable) public protocol ObjcEyeofcloudVariable {
+  @objc var id: Swift.String { get }
+  @objc var key: Swift.String { get }
+  @objc var type: Swift.String { get }
+  @objc var value: Swift.String { get }
+}
+@objc(EyeofcloudAttribute) public protocol ObjcEyeofcloudAttribute {
+  @objc var id: Swift.String { get }
+  @objc var key: Swift.String { get }
+}
+@objc(EyeofcloudAudience) public protocol ObjcEyeofcloudAudience {
+  @objc var id: Swift.String { get }
+  @objc var name: Swift.String { get }
+  @objc var conditions: Swift.String { get }
+}
+@objc(EyeofcloudEvent) public protocol ObjcEyeofcloudEvent {
+  @objc var id: Swift.String { get }
+  @objc var key: Swift.String { get }
+  @objc var experimentIds: [Swift.String] { get }
+}
+extension Eyeofcloud.EyeofcloudJSON {
+  @available(swift, obsoleted: 1.0)
+  @objc(isEmpty) dynamic public func objcIsEmpty() -> Swift.Bool
+  @available(swift, obsoleted: 1.0)
+  @objc(toString) dynamic public func objcToString() -> Swift.String?
+  @available(swift, obsoleted: 1.0)
+  @objc(toMap) dynamic public func objcToMap() -> [Swift.String : Any]
+}
+@_hasMissingDesignatedInitializers public class DataStoreUserDefaults : Eyeofcloud.OPTDataStore {
+  public func getItem(forKey: Swift.String) -> Any?
+  public func saveItem(forKey: Swift.String, value: Any)
+  public func removeItem(forKey: Swift.String)
+  @objc deinit
+}
+public typealias DatafileDownloadCompletionHandler = (Eyeofcloud.EyeofcloudResult<Foundation.Data?>) -> Swift.Void
+public protocol OPTDatafileHandler {
+  init()
+  var endPointStringFormat: Swift.String { get set }
+  func setPeriodicInterval(sdkKey: Swift.String, interval: Swift.Int)
+  func hasPeriodicInterval(sdkKey: Swift.String) -> Swift.Bool
+  func downloadDatafile(sdkKey: Swift.String) -> Foundation.Data?
+  func downloadDatafile(sdkKey: Swift.String, returnCacheIfNoChange: Swift.Bool, resourceTimeoutInterval: Swift.Double?, completionHandler: @escaping Eyeofcloud.DatafileDownloadCompletionHandler)
+  func startUpdates(sdkKey: Swift.String, datafileChangeNotification: ((Foundation.Data) -> Swift.Void)?)
+  func stopUpdates(sdkKey: Swift.String)
+  func stopAllUpdates()
+  func saveDatafile(sdkKey: Swift.String, dataFile: Foundation.Data)
+  func loadSavedDatafile(sdkKey: Swift.String) -> Foundation.Data?
+  func isDatafileSaved(sdkKey: Swift.String) -> Swift.Bool
+  func removeSavedDatafile(sdkKey: Swift.String)
+}
+@objc public enum NotificationType : Swift.Int {
+  case activate = 1
+  case track
+  case datafileChange
+  case decision
+  case logEvent
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+public typealias EyeofcloudExperimentData = [Swift.String : Any]
+public typealias EyeofcloudVariationData = [Swift.String : Any]
+public typealias GenericListener = (Any...) -> Swift.Void
+public typealias ActivateListener = (_ experiment: Eyeofcloud.EyeofcloudExperimentData, _ userId: Swift.String, _ attributes: Eyeofcloud.EyeofcloudAttributes?, _ variation: Eyeofcloud.EyeofcloudVariationData, _ event: [Swift.String : Any]) -> Swift.Void
+public typealias TrackListener = (_ eventKey: Swift.String, _ userId: Swift.String, _ attributes: Eyeofcloud.EyeofcloudAttributes?, _ eventTags: [Swift.String : Any]?, _ event: [Swift.String : Any]) -> Swift.Void
+public typealias DecisionListener = (_ type: Swift.String, _ userId: Swift.String, _ attributes: Eyeofcloud.EyeofcloudAttributes?, _ decisionInfo: [Swift.String : Any]) -> Swift.Void
+public typealias DatafileChangeListener = (_ datafile: Foundation.Data) -> Swift.Void
+public typealias LogEventListener = (_ url: Swift.String, _ event: [Swift.String : Any]) -> Swift.Void
+public protocol OPTNotificationCenter {
+  init()
+  var notificationId: Swift.Int { get set }
+  func addGenericNotificationListener(notificationType: Swift.Int, listener: @escaping Eyeofcloud.GenericListener) -> Swift.Int?
+  func addActivateNotificationListener(activateListener: @escaping Eyeofcloud.ActivateListener) -> Swift.Int?
+  func addTrackNotificationListener(trackListener: @escaping Eyeofcloud.TrackListener) -> Swift.Int?
+  func addDecisionNotificationListener(decisionListener: @escaping Eyeofcloud.DecisionListener) -> Swift.Int?
+  func addDatafileChangeNotificationListener(datafileListener: @escaping Eyeofcloud.DatafileChangeListener) -> Swift.Int?
+  func addLogEventNotificationListener(logEventListener: @escaping Eyeofcloud.LogEventListener) -> Swift.Int?
+  func removeNotificationListener(notificationId: Swift.Int)
+  func clearNotificationListeners(type: Eyeofcloud.NotificationType)
+  func clearAllNotificationListeners()
+  func sendNotifications(type: Swift.Int, args: [Any?])
+}
+@objc(OPTNotificationCenter) public protocol ObjcOPTNotificationCenter {
+  @objc func addActivateNotificationListener(activateListener: @escaping (_ experiment: [Swift.String : Any], _ userId: Swift.String, _ attributes: [Swift.String : Any]?, _ variation: [Swift.String : Any], _ event: [Swift.String : Any]) -> Swift.Void) -> Foundation.NSNumber?
+  @objc func addTrackNotificationListener(trackListener: @escaping (_ eventKey: Swift.String, _ userId: Swift.String, _ attributes: [Swift.String : Any]?, _ eventTags: [Swift.String : Any]?, _ event: [Swift.String : Any]) -> Swift.Void) -> Foundation.NSNumber?
+  @objc func addDecisionNotificationListener(decisionListener: @escaping (_ type: Swift.String, _ userId: Swift.String, _ attributes: [Swift.String : Any]?, _ decisionInfo: [Swift.String : Any]) -> Swift.Void) -> Foundation.NSNumber?
+  @objc func addDatafileChangeNotificationListener(datafileListener: @escaping (_ datafile: Foundation.Data) -> Swift.Void) -> Foundation.NSNumber?
+  @objc func addLogEventNotificationListener(logEventListener: @escaping (_ url: Swift.String, _ event: [Swift.String : Any]) -> Swift.Void) -> Foundation.NSNumber?
+  @objc func removeNotificationListener(notificationId: Swift.Int)
+  @objc func clearNotificationListeners(type: Eyeofcloud.NotificationType)
+  @objc func clearAllNotificationListeners()
+}
+@_hasMissingDesignatedInitializers public class MurmurHash3 {
+  public static func doHash32(key: Swift.UnsafePointer<Swift.UInt8>, maxBytes: Swift.Int, seed: Swift.UInt32 = 0) -> Swift.UInt32
+  public static func hash32(key: Swift.String, seed: Swift.UInt32 = 0) -> Swift.UInt32
+  public static func hash32CChar(key: [Swift.CChar], maxBytes: Swift.Int, seed: Swift.UInt32 = 0) -> Swift.UInt32
+  public static func hash32Bytes(key: [Swift.UInt8], maxBytes: Swift.Int, seed: Swift.UInt32 = 0) -> Swift.UInt32
+  public static func doHash128(key: Swift.UnsafePointer<Swift.UInt8>, maxBytes: Swift.Int, seed: Swift.UInt64 = 0) -> (h1: Swift.UInt64, h2: Swift.UInt64)
+  public static func hash128(key: Swift.String, seed: Swift.UInt64 = 0) -> (h1: Swift.UInt64, h2: Swift.UInt64)
+  public static func hash128CChar(key: [Swift.CChar], maxBytes: Swift.Int, seed: Swift.UInt64 = 0) -> (h1: Swift.UInt64, h2: Swift.UInt64)
+  public static func hash128Bytes(key: [Swift.UInt8], maxBytes: Swift.Int, seed: Swift.UInt64 = 0) -> (h1: Swift.UInt64, h2: Swift.UInt64)
+  @objc deinit
+}
+@objc public enum EyeofcloudDecideOption : Swift.Int {
+  case disableDecisionEvent
+  case enabledFlagsOnly
+  case ignoreUserProfileService
+  case includeReasons
+  case excludeVariables
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc @_hasMissingDesignatedInitializers public class EyeofcloudJSON : ObjectiveC.NSObject {
+  public var isEmpty: Swift.Bool {
+    get
+  }
+  public func toString() -> Swift.String?
+  public func toMap() -> [Swift.String : Any]
+  public func getValue<T>(jsonPath: Swift.String?) -> T? where T : Swift.Decodable
+  public func getValue<T>(jsonPath: Swift.String?) -> T?
+  @objc deinit
+}
+extension Eyeofcloud.EyeofcloudJSON {
+  @objc override dynamic public func isEqual(_ object: Any?) -> Swift.Bool
+}
+extension Eyeofcloud.EyeofcloudJSON {
+  @objc override dynamic public var description: Swift.String {
+    @objc get
+  }
+}
+public typealias EyeofcloudAttributes = [Swift.String : Any?]
+public typealias EyeofcloudEventTags = [Swift.String : Any]
+@objc open class EyeofcloudClient : ObjectiveC.NSObject {
+  public var version: Swift.String {
+    get
+  }
+  public var datafileHandler: (any Eyeofcloud.OPTDatafileHandler)?
+  public var notificationCenter: (any Eyeofcloud.OPTNotificationCenter)?
+  public init(sdkKey: Swift.String, logger: (any Eyeofcloud.OPTLogger)? = nil, eventDispatcher: (any Eyeofcloud.OPTEventDispatcher)? = nil, datafileHandler: (any Eyeofcloud.OPTDatafileHandler)? = nil, userProfileService: (any Eyeofcloud.OPTUserProfileService)? = nil, defaultLogLevel: Eyeofcloud.EyeofcloudLogLevel? = nil, defaultDecideOptions: [Eyeofcloud.EyeofcloudDecideOption]? = nil, eventURL: Foundation.URL? = nil)
+  public func start(resourceTimeout: Swift.Double? = nil, completion: ((Eyeofcloud.EyeofcloudResult<Foundation.Data>) -> Swift.Void)? = nil)
+  public func start(datafile: Swift.String) throws
+  public func start(datafile: Foundation.Data, doUpdateConfigOnNewDatafile: Swift.Bool = false, doFetchDatafileBackground: Swift.Bool = true) throws
+  public func activate(experimentKey: Swift.String, userId: Swift.String, attributes: Eyeofcloud.EyeofcloudAttributes? = nil) throws -> Swift.String
+  public func getVariationKey(experimentKey: Swift.String, userId: Swift.String, attributes: Eyeofcloud.EyeofcloudAttributes? = nil) throws -> Swift.String
+  public func getForcedVariation(experimentKey: Swift.String, userId: Swift.String) -> Swift.String?
+  public func setForcedVariation(experimentKey: Swift.String, userId: Swift.String, variationKey: Swift.String?) -> Swift.Bool
+  public func isFeatureEnabled(featureKey: Swift.String, userId: Swift.String, attributes: Eyeofcloud.EyeofcloudAttributes? = nil) -> Swift.Bool
+  public func getFeatureVariableBoolean(featureKey: Swift.String, variableKey: Swift.String, userId: Swift.String, attributes: Eyeofcloud.EyeofcloudAttributes? = nil) throws -> Swift.Bool
+  public func getFeatureVariableDouble(featureKey: Swift.String, variableKey: Swift.String, userId: Swift.String, attributes: Eyeofcloud.EyeofcloudAttributes? = nil) throws -> Swift.Double
+  public func getFeatureVariableInteger(featureKey: Swift.String, variableKey: Swift.String, userId: Swift.String, attributes: Eyeofcloud.EyeofcloudAttributes? = nil) throws -> Swift.Int
+  public func getFeatureVariableString(featureKey: Swift.String, variableKey: Swift.String, userId: Swift.String, attributes: Eyeofcloud.EyeofcloudAttributes? = nil) throws -> Swift.String
+  public func getFeatureVariableJSON(featureKey: Swift.String, variableKey: Swift.String, userId: Swift.String, attributes: Eyeofcloud.EyeofcloudAttributes? = nil) throws -> Eyeofcloud.EyeofcloudJSON
+  public func getAllFeatureVariables(featureKey: Swift.String, userId: Swift.String, attributes: Eyeofcloud.EyeofcloudAttributes? = nil) throws -> Eyeofcloud.EyeofcloudJSON
+  public func getEnabledFeatures(userId: Swift.String, attributes: Eyeofcloud.EyeofcloudAttributes? = nil) -> [Swift.String]
+  public func track(eventKey: Swift.String, userId: Swift.String, attributes: Eyeofcloud.EyeofcloudAttributes? = nil, eventTags: Eyeofcloud.EyeofcloudEventTags? = nil) throws
+  public func getEyeofcloudConfig() throws -> any Eyeofcloud.EyeofcloudConfig
+  @objc deinit
+}
+extension Eyeofcloud.EyeofcloudClient {
+  public func close()
+}
+@_hasMissingDesignatedInitializers public class DataStoreQueueStackImpl<T> : Eyeofcloud.DataStoreQueueStack where T : Swift.Decodable, T : Swift.Encodable {
+  public func save(item: T)
+  public var count: Swift.Int {
+    get
+  }
+  public func getFirstItems(count: Swift.Int = 1) -> [T]?
+  public func getLastItems(count: Swift.Int = 1) -> [T]?
+  public func removeFirstItems(count: Swift.Int = 1) -> [T]?
+  public func removeLastItems(count: Swift.Int = 1) -> [T]?
+  @objc deinit
+}
+public class EyeofcloudUserContext {
+  public var userId: Swift.String
+  public var attributes: [Swift.String : Any?] {
+    get
+  }
+  public init(eyeofcloud: Eyeofcloud.EyeofcloudClient, userId: Swift.String, attributes: [Swift.String : Any?]? = nil)
+  public func setAttribute(key: Swift.String, value: Any?)
+  public func decide(key: Swift.String, options: [Eyeofcloud.EyeofcloudDecideOption]? = nil) -> Eyeofcloud.EyeofcloudDecision
+  public func decide(keys: [Swift.String], options: [Eyeofcloud.EyeofcloudDecideOption]? = nil) -> [Swift.String : Eyeofcloud.EyeofcloudDecision]
+  public func decideAll(options: [Eyeofcloud.EyeofcloudDecideOption]? = nil) -> [Swift.String : Eyeofcloud.EyeofcloudDecision]
+  public func trackEvent(eventKey: Swift.String, eventTags: Eyeofcloud.EyeofcloudEventTags? = nil) throws
+  @objc deinit
+}
+public struct EyeofcloudDecisionContext : Swift.Hashable {
+  public let flagKey: Swift.String
+  public let ruleKey: Swift.String?
+  public init(flagKey: Swift.String, ruleKey: Swift.String? = nil)
+  public func hash(into hasher: inout Swift.Hasher)
+  public static func == (a: Eyeofcloud.EyeofcloudDecisionContext, b: Eyeofcloud.EyeofcloudDecisionContext) -> Swift.Bool
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public struct EyeofcloudForcedDecision {
+  public let variationKey: Swift.String
+  public init(variationKey: Swift.String)
+}
+extension Eyeofcloud.EyeofcloudUserContext {
+  public func setForcedDecision(context: Eyeofcloud.EyeofcloudDecisionContext, decision: Eyeofcloud.EyeofcloudForcedDecision) -> Swift.Bool
+  public func getForcedDecision(context: Eyeofcloud.EyeofcloudDecisionContext) -> Eyeofcloud.EyeofcloudForcedDecision?
+  public func removeForcedDecision(context: Eyeofcloud.EyeofcloudDecisionContext) -> Swift.Bool
+  public func removeAllForcedDecisions() -> Swift.Bool
+}
+extension Eyeofcloud.EyeofcloudUserContext : Swift.Equatable {
+  public static func == (lhs: Eyeofcloud.EyeofcloudUserContext, rhs: Eyeofcloud.EyeofcloudUserContext) -> Swift.Bool
+}
+extension Eyeofcloud.EyeofcloudUserContext : Swift.CustomStringConvertible {
+  public var description: Swift.String {
+    get
+  }
+}
+public enum EyeofcloudError : Swift.Error {
+  case generic
+  case sdkNotReady
+  case featureKeyInvalid(_: Swift.String)
+  case variableValueInvalid(_: Swift.String)
+  case invalidJSONVariable
+  case experimentKeyInvalid(_: Swift.String)
+  case experimentIdInvalid(_: Swift.String)
+  case experimentHasNoTrafficAllocation(_: Swift.String)
+  case variationKeyInvalid(_: Swift.String, _: Swift.String)
+  case variationIdInvalid(_: Swift.String, _: Swift.String)
+  case variationUnknown(_: Swift.String, _: Swift.String)
+  case variableKeyInvalid(_: Swift.String, _: Swift.String)
+  case eventKeyInvalid(_: Swift.String)
+  case eventBuildFailure(_: Swift.String)
+  case eventTagsFormatInvalid
+  case attributesKeyInvalid(_: Swift.String)
+  case attributeValueInvalid(_: Swift.String)
+  case attributeFormatInvalid
+  case groupIdInvalid(_: Swift.String)
+  case groupHasNoTrafficAllocation(_: Swift.String)
+  case rolloutIdInvalid(_: Swift.String, _: Swift.String)
+  case conditionNoMatchingAudience(_: Swift.String)
+  case conditionInvalidFormat(_: Swift.String)
+  case conditionCannotBeEvaluated(_: Swift.String)
+  case evaluateAttributeInvalidCondition(_: Swift.String)
+  case evaluateAttributeInvalidType(_: Swift.String, _: Any, _: Swift.String)
+  case evaluateAttributeValueOutOfRange(_: Swift.String, _: Swift.String)
+  case evaluateAttributeInvalidFormat(_: Swift.String)
+  case userAttributeInvalidType(_: Swift.String)
+  case userAttributeInvalidMatch(_: Swift.String)
+  case userAttributeNilValue(_: Swift.String)
+  case userAttributeInvalidName(_: Swift.String)
+  case nilAttributeValue(_: Swift.String, _: Swift.String)
+  case missingAttributeValue(_: Swift.String, _: Swift.String)
+  case userIdInvalid
+  case bucketingIdInvalid(_: Swift.UInt64)
+  case userProfileInvalid
+  case datafileDownloadFailed(_: Swift.String)
+  case dataFileInvalid
+  case dataFileVersionInvalid(_: Swift.String)
+  case datafileSavingFailed(_: Swift.String)
+  case datafileLoadingFailed(_: Swift.String)
+  case eventDispatchFailed(_: Swift.String)
+  case eventDispatcherConfigError(_: Swift.String)
+}
+extension Eyeofcloud.EyeofcloudError : Swift.CustomStringConvertible {
+  public var description: Swift.String {
+    get
+  }
+  public var localizedDescription: Swift.String {
+    get
+  }
+}
+extension Eyeofcloud.EyeofcloudError : Foundation.LocalizedError {
+  public var errorDescription: Swift.String? {
+    get
+  }
+}
+@objc @objcMembers public class EventForDispatch : ObjectiveC.NSObject, Swift.Codable {
+  @objc public static var eventEndpoint: Swift.String
+  @objc final public let url: Foundation.URL
+  @objc final public let body: Foundation.Data
+  @objc public init(url: Foundation.URL? = nil, body: Foundation.Data)
+  @objc override dynamic public func isEqual(_ object: Any?) -> Swift.Bool
+  @objc deinit
+  public func encode(to encoder: any Swift.Encoder) throws
+  required public init(from decoder: any Swift.Decoder) throws
+}
+extension Eyeofcloud.EventForDispatch {
+  @objc override dynamic public var description: Swift.String {
+    @objc get
+  }
+}
+extension Eyeofcloud.EyeofcloudClient {
+  @available(swift, obsoleted: 1.0)
+  @objc convenience dynamic public init(sdkKey: Swift.String)
+  @available(swift, obsoleted: 1.0)
+  @objc convenience dynamic public init(sdkKey: Swift.String, logger: (any Eyeofcloud.OPTLogger)?, eventDispatcher: (any Eyeofcloud._ObjcOPTEventDispatcher)?, userProfileService: (any Eyeofcloud.OPTUserProfileService)?, periodicDownloadInterval: Foundation.NSNumber?, defaultLogLevel: Eyeofcloud.EyeofcloudLogLevel)
+  @available(swift, obsoleted: 1.0)
+  @objc(startWithCompletion:) dynamic public func objcStart(completion: ((Foundation.Data?, Foundation.NSError?) -> Swift.Void)?)
+  @available(swift, obsoleted: 1.0)
+  @objc(startWithDatafile:error:) dynamic public func objcStartWith(datafile: Swift.String) throws
+  @available(swift, obsoleted: 1.0)
+  @objc(startWithDatafile:doFetchDatafileBackground:error:) dynamic public func objcStart(datafile: Foundation.Data, doFetchDatafileBackground: Swift.Bool) throws
+  @available(swift, obsoleted: 1.0)
+  @objc(startWithDatafile:doUpdateConfigOnNewDatafile:doFetchDatafileBackground:error:) dynamic public func objcStart(datafile: Foundation.Data, doUpdateConfigOnNewDatafile: Swift.Bool, doFetchDatafileBackground: Swift.Bool) throws
+  @available(swift, obsoleted: 1.0)
+  @objc(activateWithExperimentKey:userId:attributes:error:) dynamic public func objcActivate(experimentKey: Swift.String, userId: Swift.String, attributes: [Swift.String : Any]?) throws -> Swift.String
+  @available(swift, obsoleted: 1.0)
+  @objc(getVariationKeyWithExperimentKey:userId:attributes:error:) dynamic public func objcGetVariationKey(experimentKey: Swift.String, userId: Swift.String, attributes: [Swift.String : Any]?) throws -> Swift.String
+  @available(swift, obsoleted: 1.0)
+  @objc(getForcedVariationWithExperimentKey:userId:) dynamic public func objcGetForcedVariation(experimentKey: Swift.String, userId: Swift.String) -> Swift.String?
+  @available(swift, obsoleted: 1.0)
+  @objc(setForcedVariationWithExperimentKey:userId:variationKey:) dynamic public func objcSetForcedVariation(experimentKey: Swift.String, userId: Swift.String, variationKey: Swift.String?) -> Swift.Bool
+  @available(swift, obsoleted: 1.0)
+  @objc(isFeatureEnabledWithFeatureKey:userId:attributes:) dynamic public func objcIsFeatureEnabled(featureKey: Swift.String, userId: Swift.String, attributes: [Swift.String : Any]?) -> Swift.Bool
+  @available(swift, obsoleted: 1.0)
+  @objc(getFeatureVariableBooleanWithFeatureKey:variableKey:userId:attributes:error:) dynamic public func objcGetFeatureVariableBoolean(featureKey: Swift.String, variableKey: Swift.String, userId: Swift.String, attributes: [Swift.String : Any]?) throws -> Foundation.NSNumber
+  @available(swift, obsoleted: 1.0)
+  @objc(getFeatureVariableDoubleWithFeatureKey:variableKey:userId:attributes:error:) dynamic public func objcGetFeatureVariableDouble(featureKey: Swift.String, variableKey: Swift.String, userId: Swift.String, attributes: [Swift.String : Any]?) throws -> Foundation.NSNumber
+  @available(swift, obsoleted: 1.0)
+  @objc(getFeatureVariableIntegerWithFeatureKey:variableKey:userId:attributes:error:) dynamic public func objcGetFeatureVariableInteger(featureKey: Swift.String, variableKey: Swift.String, userId: Swift.String, attributes: [Swift.String : Any]?) throws -> Foundation.NSNumber
+  @available(swift, obsoleted: 1.0)
+  @objc(getFeatureVariableStringWithFeatureKey:variableKey:userId:attributes:error:) dynamic public func objcGetFeatureVariableString(featureKey: Swift.String, variableKey: Swift.String, userId: Swift.String, attributes: [Swift.String : Any]?) throws -> Swift.String
+  @available(swift, obsoleted: 1.0)
+  @objc(getFeatureVariableJSONWithFeatureKey:variableKey:userId:attributes:error:) dynamic public func objcGetFeatureVariableJSON(featureKey: Swift.String, variableKey: Swift.String, userId: Swift.String, attributes: [Swift.String : Any]?) throws -> Eyeofcloud.EyeofcloudJSON
+  @objc(getAllFeatureVariablesWithFeatureKey:userId:attributes:error:) dynamic public func objcGetAllFeatureVariables(featureKey: Swift.String, userId: Swift.String, attributes: [Swift.String : Any]?) throws -> Eyeofcloud.EyeofcloudJSON
+  @available(swift, obsoleted: 1.0)
+  @objc(getEnabledFeaturesWithUserId:attributes:) dynamic public func objcGetEnabledFeatures(userId: Swift.String, attributes: [Swift.String : Any]?) -> [Swift.String]
+  @available(swift, obsoleted: 1.0)
+  @objc(trackWithEventKey:userId:attributes:eventTags:error:) dynamic public func objcTrack(eventKey: Swift.String, userId: Swift.String, attributes: [Swift.String : Any]?, eventTags: [Swift.String : Any]?) throws
+  @available(swift, obsoleted: 1.0)
+  @objc(getEyeofcloudConfigWithError:) dynamic public func objcGetEyeofcloudConfig() throws -> any Eyeofcloud.ObjcEyeofcloudConfig
+}
+extension Eyeofcloud.EyeofcloudClient {
+  @available(swift, obsoleted: 1.0)
+  @objc(notificationCenter) dynamic public var objcNotificationCenter: any Eyeofcloud.ObjcOPTNotificationCenter {
+    @objc get
+  }
+}
+@objc(OPTEventDispatcher) public protocol _ObjcOPTEventDispatcher {
+  @objc func dispatchEvent(event: Eyeofcloud.EventForDispatch, completionHandler: ((Foundation.Data?, Foundation.NSError?) -> Swift.Void)?)
+  @objc func flushEvents()
+}
+@available(swift, obsoleted: 1.0)
+@objc(DefaultEventDispatcher) public class ObjEventDispatcher : ObjectiveC.NSObject, Eyeofcloud._ObjcOPTEventDispatcher {
+  @objc public init(batchSize: Swift.Int = DefaultEventDispatcher.DefaultValues.batchSize, timerInterval: Foundation.TimeInterval = DefaultEventDispatcher.DefaultValues.timeInterval, maxQueueSize: Swift.Int = DefaultEventDispatcher.DefaultValues.maxQueueSize)
+  @objc public func dispatchEvent(event: Eyeofcloud.EventForDispatch, completionHandler: ((Foundation.Data?, Foundation.NSError?) -> Swift.Void)?)
+  @objc public func flushEvents()
+  @objc deinit
+}
+@objc public protocol OPTUserProfileService {
+  typealias UPProfile = [Swift.String : Any]
+  typealias UPBucketMap = [Swift.String : Self.UPExperimentMap]
+  typealias UPExperimentMap = [Swift.String : Swift.String]
+  @objc init()
+  @objc func lookup(userId: Swift.String) -> Self.UPProfile?
+  @objc func save(userProfile: Self.UPProfile)
+}
+open class DefaultUserProfileService : Eyeofcloud.OPTUserProfileService {
+  public typealias UserProfileData = [Swift.String : Eyeofcloud.DefaultUserProfileService.UPProfile]
+  @objc required public init()
+  @objc open func lookup(userId: Swift.String) -> Eyeofcloud.DefaultUserProfileService.UPProfile?
+  @objc open func save(userProfile: Eyeofcloud.DefaultUserProfileService.UPProfile)
+  open func reset(userProfiles: Eyeofcloud.DefaultUserProfileService.UserProfileData? = nil)
+  @objc deinit
+}
+public protocol DataStoreQueueStack {
+  var count: Swift.Int { get }
+  func save(item: Self.T)
+  func getFirstItems(count: Swift.Int) -> [Self.T]?
+  func getLastItems(count: Swift.Int) -> [Self.T]?
+  func removeFirstItems(count: Swift.Int) -> [Self.T]?
+  func removeLastItems(count: Swift.Int) -> [Self.T]?
+  associatedtype T
+}
+public protocol EyeofcloudConfig {
+  var environmentKey: Swift.String { get }
+  var sdkKey: Swift.String { get }
+  var revision: Swift.String { get }
+  var experimentsMap: [Swift.String : any Eyeofcloud.EyeofcloudExperiment] { get }
+  var featuresMap: [Swift.String : any Eyeofcloud.EyeofcloudFeature] { get }
+  var attributes: [any Eyeofcloud.EyeofcloudAttribute] { get }
+  var audiences: [any Eyeofcloud.EyeofcloudAudience] { get }
+  var events: [any Eyeofcloud.EyeofcloudEvent] { get }
+}
+public protocol EyeofcloudExperiment {
+  var id: Swift.String { get }
+  var key: Swift.String { get }
+  var audiences: Swift.String { get }
+  var variationsMap: [Swift.String : any Eyeofcloud.EyeofcloudVariation] { get }
+}
+public protocol EyeofcloudFeature {
+  var id: Swift.String { get }
+  var key: Swift.String { get }
+  var experimentRules: [any Eyeofcloud.EyeofcloudExperiment] { get }
+  var deliveryRules: [any Eyeofcloud.EyeofcloudExperiment] { get }
+  var variablesMap: [Swift.String : any Eyeofcloud.EyeofcloudVariable] { get }
+  @available(*, deprecated, message: "Use experimentRules and deliveryRules")
+  var experimentsMap: [Swift.String : any Eyeofcloud.EyeofcloudExperiment] { get }
+}
+public protocol EyeofcloudVariation {
+  var id: Swift.String { get }
+  var key: Swift.String { get }
+  var featureEnabled: Swift.Bool? { get }
+  var variablesMap: [Swift.String : any Eyeofcloud.EyeofcloudVariable] { get }
+}
+public protocol EyeofcloudVariable {
+  var id: Swift.String { get }
+  var key: Swift.String { get }
+  var type: Swift.String { get }
+  var value: Swift.String { get }
+}
+public protocol EyeofcloudAttribute {
+  var id: Swift.String { get }
+  var key: Swift.String { get }
+}
+public protocol EyeofcloudAudience {
+  var id: Swift.String { get }
+  var name: Swift.String { get }
+  var conditions: Swift.String { get }
+}
+public protocol EyeofcloudEvent {
+  var id: Swift.String { get }
+  var key: Swift.String { get }
+  var experimentIds: [Swift.String] { get }
+}
+public protocol OPTDataStore {
+  func getItem(forKey: Swift.String) -> Any?
+  func saveItem(forKey: Swift.String, value: Any)
+  func removeItem(forKey: Swift.String)
+}
+@objc public enum EyeofcloudLogLevel : Swift.Int {
+  case off = 0
+  case error = 1
+  case warning = 2
+  case info = 3
+  case debug = 4
+  case verbose = 5
+  public var name: Swift.String {
+    get
+  }
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+extension Eyeofcloud.EyeofcloudLogLevel : Swift.Comparable {
+  public static func < (lhs: Eyeofcloud.EyeofcloudLogLevel, rhs: Eyeofcloud.EyeofcloudLogLevel) -> Swift.Bool
+}
+@_hasMissingDesignatedInitializers public class DataStoreMemory<T> : Eyeofcloud.OPTDataStore where T : Swift.Decodable, T : Swift.Encodable {
+  public enum BackingStore {
+    case userDefaults, file
+    public static func == (a: Eyeofcloud.DataStoreMemory<T>.BackingStore, b: Eyeofcloud.DataStoreMemory<T>.BackingStore) -> Swift.Bool
+    public func hash(into hasher: inout Swift.Hasher)
+    public var hashValue: Swift.Int {
+      get
+    }
+  }
+  @objc deinit
+  public func getItem(forKey: Swift.String) -> Any?
+  public func load(forKey: Swift.String)
+  public func saveItem(forKey: Swift.String, value: Any)
+  public func removeItem(forKey: Swift.String)
+}
+extension Eyeofcloud.DataStoreType : Swift.Equatable {}
+extension Eyeofcloud.DataStoreType : Swift.Hashable {}
+extension Eyeofcloud.NotificationType : Swift.Equatable {}
+extension Eyeofcloud.NotificationType : Swift.Hashable {}
+extension Eyeofcloud.NotificationType : Swift.RawRepresentable {}
+extension Eyeofcloud.EyeofcloudDecideOption : Swift.Equatable {}
+extension Eyeofcloud.EyeofcloudDecideOption : Swift.Hashable {}
+extension Eyeofcloud.EyeofcloudDecideOption : Swift.RawRepresentable {}
+extension Eyeofcloud.EyeofcloudLogLevel : Swift.Hashable {}
+extension Eyeofcloud.EyeofcloudLogLevel : Swift.RawRepresentable {}
+extension Eyeofcloud.DataStoreMemory.BackingStore : Swift.Equatable {}
+extension Eyeofcloud.DataStoreMemory.BackingStore : Swift.Hashable {}
