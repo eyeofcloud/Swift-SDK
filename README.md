@@ -10,13 +10,13 @@ Swift sdk framework包以及使用说明
 
 要试用 SDK,请执行以下操作：
 
-1. 在xcode中创建一个新的Storyboard项目 `eyeofcloud-java-quickstart`
+1. 在xcode中创建一个新的Storyboard项目 `eyeofcloud-swift-quickstart`
 2. 将Swift SDK的framework包引入项目中
 
 > ### 在General/Frameworks,Libraries,and Embedded Content中将framework设置为Embed & Sign
 
 3. 将以下代码示例复制到应用到ViewController.swift文件中
-4. 将<Your\_SDK\_Key>替换为在上一步中找到的SDK密钥
+4. 将<Your\_SDK\_Key>替换为可用的SDK密钥
 
 ```
 import UIKit
